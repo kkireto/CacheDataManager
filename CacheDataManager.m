@@ -7,8 +7,7 @@
 
 #import "CacheDataManager.h"
 
-#import "UIImageView+AFNetworking.h"
-#import "UIButton+AFNetworking.h"
+#import "AFNetworking.h"
 
 @implementation CacheDataManager
 
@@ -86,14 +85,17 @@
             [imageView setImage:[UIImage imageNamed:placeholderImage]];
         }
         imageView.tag = assetId;
-        AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURL]]];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageURL]];
+        request.HTTPShouldHandleCookies = NO;
+        AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+        requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            
-            [UIImageJPEGRepresentation(responseObject, 1.0) writeToFile:imageCachePath atomically:YES];
-            if (imageView && imageView.tag == assetId) {
-                [imageView setImage:responseObject];
+            if (responseObject) {
+                [UIImageJPEGRepresentation(responseObject, 1.0) writeToFile:imageCachePath atomically:YES];
+                if (imageView && imageView.tag == assetId) {
+                    [imageView setImage:responseObject];
+                }
             }
-            
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"error downloading button image: %@", error);
         }];
@@ -113,12 +115,15 @@
     }
     else {
         [button setImage:[UIImage imageNamed:placeholderImage] forState:UIControlStateNormal];
-        AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURL]]];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageURL]];
+        request.HTTPShouldHandleCookies = NO;
+        AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+        requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            
-            [UIImageJPEGRepresentation(responseObject, 1.0) writeToFile:imageCachePath atomically:YES];
-            [button setImage:responseObject forState:UIControlStateNormal];
-            
+            if (responseObject) {
+                [UIImageJPEGRepresentation(responseObject, 1.0) writeToFile:imageCachePath atomically:YES];
+                [button setImage:responseObject forState:UIControlStateNormal];
+            }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"error downloading button image: %@", error);
         }];
@@ -138,12 +143,15 @@
     }
     else {
         [button setImage:[UIImage imageNamed:placeholderImage] forState:UIControlStateNormal];
-        AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURL]]];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageURL]];
+        request.HTTPShouldHandleCookies = NO;
+        AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+        requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            
-            [UIImageJPEGRepresentation(responseObject, 1.0) writeToFile:imageCachePath atomically:YES];
-            [button setBackgroundImage:responseObject forState:UIControlStateNormal];
-            
+            if (responseObject) {
+                [UIImageJPEGRepresentation(responseObject, 1.0) writeToFile:imageCachePath atomically:YES];
+                [button setBackgroundImage:responseObject forState:UIControlStateNormal];
+            }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"error downloading button image: %@", error);
         }];
@@ -166,17 +174,20 @@
             [imageView setImage:[UIImage imageNamed:placeholderImage]];
         }
         imageView.tag = assetId;
-        AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURL]]];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageURL]];
+        request.HTTPShouldHandleCookies = NO;
+        AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+        requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            
-            NSDictionary * args = [NSDictionary dictionaryWithObjectsAndKeys:
+            if (responseObject) {
+                NSDictionary * args = [NSDictionary dictionaryWithObjectsAndKeys:
                                    imageView, @"image_view",
                                    imageCachePath, @"image_path",
                                    responseObject, @"image",
                                    [NSNumber numberWithInteger:assetId] ,@"asset_id",
                                    nil];
-            [self performSelectorInBackground:@selector(setImageForImageView:) withObject:args];
-            
+                [self performSelectorInBackground:@selector(setImageForImageView:) withObject:args];
+            }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"error downloading button image: %@", error);
         }];
@@ -196,17 +207,20 @@
     }
     else {
         [button setImage:[UIImage imageNamed:placeholderImage] forState:UIControlStateNormal];
-        AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURL]]];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageURL]];
+        request.HTTPShouldHandleCookies = NO;
+        AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+        requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            
-            NSDictionary * args = [NSDictionary dictionaryWithObjectsAndKeys:
+            if (responseObject) {
+                NSDictionary * args = [NSDictionary dictionaryWithObjectsAndKeys:
                                    button, @"button",
                                    imageCachePath, @"image_path",
                                    responseObject, @"image",
                                    [NSNumber numberWithInteger:assetId] ,@"asset_id",
                                    nil];
-            [self performSelectorInBackground:@selector(setImageForButton:) withObject:args];
-            
+                [self performSelectorInBackground:@selector(setImageForButton:) withObject:args];
+            }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"error downloading button image: %@", error);
         }];
@@ -226,17 +240,20 @@
     }
     else {
         [button setImage:[UIImage imageNamed:placeholderImage] forState:UIControlStateNormal];
-        AFImageRequestOperation *requestOperation = [[AFImageRequestOperation alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURL]]];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:imageURL]];
+        request.HTTPShouldHandleCookies = NO;
+        AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+        requestOperation.responseSerializer = [AFImageResponseSerializer serializer];
         [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            
-            NSDictionary * args = [NSDictionary dictionaryWithObjectsAndKeys:
+            if (responseObject) {
+                NSDictionary * args = [NSDictionary dictionaryWithObjectsAndKeys:
                                    button, @"button",
                                    imageCachePath, @"image_path",
                                    responseObject, @"image",
                                    [NSNumber numberWithInteger:assetId] ,@"asset_id",
                                    nil];
-            [self performSelectorInBackground:@selector(setButtonBackgroundImage:) withObject:args];
-            
+                [self performSelectorInBackground:@selector(setButtonBackgroundImage:) withObject:args];
+            }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"error downloading button image: %@", error);
         }];
